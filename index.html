@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src="jquery/jquery.js"></script>
+
+  </head>
+  <body>
+      <div id="root"></div>
+      
+      <fieldset>GET Users<div id="get"></div><div id="respget"></div></fieldset>
+      <fieldset>POST User<div id="post"></div><div id="resppost"></div></fieldset>
+      <fieldset>GET User Id<div id="getid"></div><div id="respgetid"></div></fieldset>
+      <fieldset>PUT User Id<div id="put"></div><div id="respput"></div></fieldset>
+      <fieldset>DELETE User<div id="delete"></div></fieldset>
+      
+      <script type="text/babel">            
+        class GetForm extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {value: ''};
+
+                this.handleChange = this.handleChange.bind(this);
+                this.handleSubmit = this.handleSubmit.bind(this);
+            }
+            
+            handleChange(event) {
+                this.setState({value: event.target.value});
+            }
+
+            handleSubmit(event) {
+                //
+                $.ajax({
+                  url: 'http://127.0.0.1:8000/users',
+                  type: 'GET',
+                  dataType: 'json',
+                  success : function(json, status) {
+                    $('#respget').html('');
+                    for(var key in json) {
+                        $('#respget').append(json[key]['id'] +','+ json[key]['login']+','+ json[key]['detail'] +'</br>');
+                    };
+                    
+                  }.bind(this),
+                  error : function(xhr, status, err) {
+                    alert(status);
+                    console.error(this.props.url, status, err.toString());
+                  }.bind(this)
+                });
+                event.preventDefault();
+            }
+
+            render() {
+                return (
+                  <form onSubmit={this.handleSubmit}>
+                    <input type="submit" value="Get Users" />
+                  </form>
+                );
+            }
+        }
+        
+        class PostForm extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {value: ''};
+
+                this.handleChange = this.handleChange.bind(this);
+                this.handleSubmit = this.handleSubmit.bind(this);
+            }
+            
+            handleChange(event) {
+                this.setState({value: event.target.value});
+            }
+
+            handleSubmit(event) {
+                $.ajax({
+                  url: 'http://127.0.0.1:8000/users',
+                  type: 'POST',
+                  dataType: 'json',
+                  data: this.state.value,
+                  contentType: "application/json; charset=utf-8",
+                  success : function(json, status) {
+                    $('#resppost').html('');
+                    $('#resppost').append(json['id'] +','+ json['login']+','+ json['detail'] +'</br>');
+                    
+                  }.bind(this),
+                  error : function(xhr, status, err) {
+                    alert(status);
+                    console.error(this.props.url, status, err.toString());
+                  }.bind(this)
+                });
+                alert('Post User ' + this.state.value);
+                event.preventDefault();
+            }
+
+            render() {
+                return (
+                  <form onSubmit={this.handleSubmit}>
+                    <label>
+                        User:
+                        <textarea value={this.state.value} onChange={this.handleChange} id='posttxt'>
+                        </textarea>
+                    </label>
+                    <input type="submit" value="Post User" />
+                  </form>
+                );
+            }
+        }
+        
+        class GetIdForm extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {value: ''};
+
+                this.handleChange = this.handleChange.bind(this);
+                this.handleSubmit = this.handleSubmit.bind(this);
+            }
+            
+            handleChange(event) {
+                this.setState({value: event.target.value});
+            }
+
+            handleSubmit(event) {
+                //
+                $.ajax({
+                  url: 'http://127.0.0.1:8000/users/' + this.state.value,
+                  type: 'GET',
+                  dataType: 'json',
+                  cache: false,
+                  success: function(result, status) {
+                    $('#respgetid').html(result['id'] +','+ result['login']+','+ result['detail']);
+                  }.bind(this),
+                  error: function(xhr, status, err) {
+                      alert(status);
+                      console.error(this.props.url, status, err.toString());
+                  }.bind(this)
+                });
+                event.preventDefault();
+            }
+
+            render() {
+                return (
+                  <form onSubmit={this.handleSubmit}>
+                    <label>
+                        User Id:
+                        <input type="text" value={this.state.value} onChange={this.handleChange} />
+                    </label>
+                    <input type="submit" value="Get User Id" />
+                  </form>
+                );
+            }
+        }
+        
+        class PutForm extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {value: ''};
+
+                this.handleChange = this.handleChange.bind(this);
+                this.handleSubmit = this.handleSubmit.bind(this);
+            }
+            
+            handleChange(event) {
+                this.setState({value: event.target.value});
+            }
+
+            handleSubmit(event) {
+                $.ajax({
+                  url: 'http://127.0.0.1:8000/users/12',
+                  type: 'PUT',
+                  dataType: 'json',
+                  data: this.state.value,
+                  contentType: "application/json; charset=utf-8",
+                  success : function(json, status) {
+                    $('#respput').html('');
+                    $('#respput').append(json['id'] +','+ json['login']+','+ json['detail'] +'</br>');
+                    
+                  }.bind(this),
+                  error : function(xhr, status, err) {
+                    alert(status);
+                    console.error(this.props.url, status, err.toString());
+                  }.bind(this)
+                });
+                alert('Put User ' + this.state.value);
+                event.preventDefault();
+            }
+
+            render() {
+                return (
+                  <form onSubmit={this.handleSubmit}>
+                    <label>
+                        User:
+                        <textarea value={this.state.value} onChange={this.handleChange} >
+                        </textarea>
+                    </label>
+                    <input type="submit" value="Put User" />
+                  </form>
+                );
+            }
+        }
+        
+        class DeleteForm extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {value: ''};
+
+                this.handleChange = this.handleChange.bind(this);
+                this.handleSubmit = this.handleSubmit.bind(this);
+            }
+            
+            handleChange(event) {
+                this.setState({value: event.target.value});
+            }
+
+            handleSubmit(event) {
+                //
+                $.ajax({
+                  url: 'http://127.0.0.1:8000/users/' + this.state.value,
+                  type: 'DELETE',
+                  dataType: 'json',
+                  cache: false,
+                  success: function(result, status) {
+                    $('#respgetid').html('');
+                  }.bind(this),
+                  error: function(xhr, status, err) {
+                      alert(status);
+                      console.error(this.props.url, status, err.toString());
+                  }.bind(this)
+                });
+                alert('Delete User ' + this.state.value);
+                event.preventDefault();
+            }
+
+            render() {
+                return (
+                  <form onSubmit={this.handleSubmit}>
+                    <label>
+                        User Id:
+                        <input type="text" value={this.state.value} onChange={this.handleChange} />
+                    </label>
+                    <input type="submit" value="Delete User Id" />
+                  </form>
+                );
+            }
+        }
+        
+        ReactDOM.render(
+            <GetForm />,
+            document.getElementById('get')
+        );
+         
+        ReactDOM.render(
+            <PostForm />,
+            document.getElementById('post')
+        );
+         
+        ReactDOM.render(
+            <GetIdForm />,
+            document.getElementById('getid')
+        );
+         
+        ReactDOM.render(
+            <PutForm />,
+            document.getElementById('put')
+        );
+         
+        ReactDOM.render(
+            <DeleteForm />,
+            document.getElementById('delete')
+        );
+        
+      </script>
+  </body>
+</html>

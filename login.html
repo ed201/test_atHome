@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
+        <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="text/babel">
+        ReactDOM.render(
+            <ul>
+                <li><a href="http://127.0.0.1:8000/users.json">GET Users</a></li>
+                <li>POST Users</li>
+                <li><a href="http://127.0.0.1:8000/users/1.json">GET Users (id)</a></li>
+                <li>PUT Users (id)</li>
+                <li>DELETE Users (id)</li>
+            </ul>,
+            document.getElementById('root')
+        );
+        </script>
+    </body>
+</html>
